@@ -123,7 +123,7 @@ pipeline {
                     sh 'ssh -i ${keyfile} -o StrictHostKeyChecking=no jenkins@192.168.240.254 "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"'
                     sh 'ssh -i ${keyfile} -o StrictHostKeyChecking=no jenkins@192.168.240.254 docker pull alifadi/nodegoat:0.1'
                     sh 'ssh -i ${keyfile} -o StrictHostKeyChecking=no jenkins@192.168.240.254 docker rm --force nodegoat'
-                    sh 'ssh -i ${keyfile} -o StrictHostKeyChecking=no jenkins@192.168.240.254 docker run -it --detach -p 4000:4000 --name nodegoat --network host alifadi/nodegoat:0.1'
+                    sh 'ssh -i ${keyfile} -o StrictHostKeyChecking=no jenkins@192.168.240.254 docker run -it --detach -p 1000:1000 --name nodegoat --network host alifadi/nodegoat:0.1'
                 }
             }
         }
@@ -136,7 +136,7 @@ pipeline {
            }
            steps {
                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-                   sh 'nuclei -u http://192.168.240.254:4000 -j > nuclei-report.json'
+                   sh 'nuclei -u http://192.168.240.254:1000 -j > nuclei-report.json'
                    sh 'cat nuclei-report.json'
                }
                archiveArtifacts artifacts: 'nuclei-report.json'
